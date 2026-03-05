@@ -24,3 +24,6 @@ class Data_Splitter:
 			test_df.to_csv(
 				(data_folder / "fetal_health_test.csv").resolve(), index=False
 			)
+			return train_df, test_df
+		else:
+			raise ValueError("Debes descargar el dataset primero.")
