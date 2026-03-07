@@ -1,10 +1,11 @@
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 
 class Data_Preprocessor:
 	def __init__(self):
 		self.std_scaler: StandardScaler = None
+		self.label_encoder: LabelEncoder = None
 
 	def preprocess(
 		self,
@@ -16,6 +17,7 @@ class Data_Preprocessor:
 		self.check_nulls(data)
 		x, labels = self.separate(data, target)
 		x = self.standardize(x, training_dataset, columns)
+		labels = self.encode(labels, training_dataset)
 		return x, labels
 
 	def check_nulls(self, data: pd.DataFrame):
@@ -47,3 +49,18 @@ class Data_Preprocessor:
 			)
 		x[cols] = self.std_scaler.transform(x[cols])
 		return x
+
+	def encode(self, labels, training_dataset):
+		if training_dataset:
+			self.label_encoder = LabelEncoder()
+			self.label_encoder.fit(labels)
+		if not self.label_encoder:
+			raise ValueError(
+				"El codificado de las etiquetas debe ser entrenado antes de inferir, training_dataset = True"
+			)
+		return self.label_encoder.transform(labels)
+
+	def decode(self, encoded_labels):
+		if not self.label_encoder:
+			raise ValueError("Se debe entrenar el codificador de etiquetas.")
+		return self.label_encoder.inverse_transform(encoded_labels)
