@@ -1,4 +1,10 @@
-from utils import Data_Downloader, Data_Preprocessor, Data_Splitter, Model_Manager
+from utils import (
+	Data_Downloader,
+	Data_Preprocessor,
+	Data_Splitter,
+	Metrics_Generator,
+	Model_Manager,
+)
 
 SEED = 42  # None para no reproducibilidad.
 
@@ -18,8 +24,9 @@ def main():
 	model_manager = Model_Manager(seed=SEED)
 	model_manager.train(x_train, y_train)
 	models, y_hats = model_manager.predict(x_test)
+	metrics = Metrics_Generator()
 	for model, y_hat in zip(models, y_hats):
-		pass
+		metrics.generate(model, y_test, y_hat)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, get_args
 
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
@@ -11,12 +11,16 @@ POSSIBLE_MODELS = Literal["Random Forest", "XGBoost", "KNN", "Logistic Regressio
 
 class Model_Manager:
 	def __init__(
-		self, models: list[POSSIBLE_MODELS] | Literal["All"] = "All", seed=None
+		self,
+		models: list[get_args(POSSIBLE_MODELS)] | Literal["All"] = "All",
+		seed=None,
 	):
-		self.models = []
 		if models == "All":
-			models = list(POSSIBLE_MODELS)
-		self.models_names = [model for model in models if model in set(POSSIBLE_MODELS)]
+			models = list(get_args(POSSIBLE_MODELS))
+		self.models_names = [
+			model for model in models if model in set(get_args(POSSIBLE_MODELS))
+		]
+		self.models = []
 		for model in self.models_names:
 			match model:
 				case "Random Forest":
